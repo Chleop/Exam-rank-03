@@ -6,7 +6,7 @@
 /*   By: cproesch <cproesch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 14:18:00 by cproesch          #+#    #+#             */
-/*   Updated: 2021/11/04 18:26:22 by cproesch         ###   ########.fr       */
+/*   Updated: 2021/11/04 18:31:29 by cproesch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void	set_draw_param(FILE *fd, t_draw *draw)
 	return;
 }
 
-void	set_zone(FILE *fd, t_data *data)
+void	set_zone_param(FILE *fd, t_data *data)
 {
 	char	str[1000];
 
@@ -155,7 +155,7 @@ int	main (int argc, char **argv)
 		ft_putstr("Error: Operation file corrupted\n");
 		return (1);
 	}
-	set_zone(fd, data);
+	set_zone_param(fd, data);
 	i = 0;
 	while (fscanf(fd, "%c", &c) != EOF)
 	{
