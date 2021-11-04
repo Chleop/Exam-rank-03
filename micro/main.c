@@ -6,7 +6,7 @@
 /*   By: cproesch <cproesch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 14:18:00 by cproesch          #+#    #+#             */
-/*   Updated: 2021/11/04 17:22:16 by cproesch         ###   ########.fr       */
+/*   Updated: 2021/11/04 18:26:22 by cproesch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	ft_strlen(char *str)
 {
 	int	i;
-	
+
 	i = 0;
 	if (!str)
 		return (-1);
@@ -60,18 +60,20 @@ int	ft_atoi(const char *str)
 
 void	set_draw_param(FILE *fd, t_draw *draw)
 {
+	float f;
+
 	draw->type = '\0';
 	fscanf(fd, "%c", &(draw->type));
-	draw->x = 0;
-	fscanf(fd, "%f", &(draw->x));
-	draw->y = 0;
-	fscanf(fd, "%f", &(draw->y));
-	draw->width = 0;
-	fscanf(fd, "%f", &(draw->width));
-	draw->height = 0;
-	fscanf(fd, "%f", &(draw->height));
+	fscanf(fd, "%f", &f);
+	draw->x = (int)f;
+	fscanf(fd, "%f", &f);
+	draw->y = (int)f;
+	fscanf(fd, "%f", &f);
+	draw->width = (int)f;
+	fscanf(fd, "%f", &f);
+	draw->height = (int)f;
 	fscanf(fd, "%s", (draw->pen));
-	printf ("type = %c, x = %f, y = %f, width = %f, height = %f, pen = %s\n",
+	printf ("type = %c, x = %d, y = %d, width = %d, height = %d, pen = %s\n",
 	draw->type, draw->x, draw->y, draw->width, draw->height, draw->pen);
 	return;
 }
@@ -89,30 +91,37 @@ void	set_zone(FILE *fd, t_data *data)
 	return ;
 }
 
-int	draw(float m, float n, int count, t_data *data)
+int	draw(int m, int n, int count, t_data *data)
 {
-	int i;
+	int 	i;
+	char	type;
+	int		x;
+	int	y;
+	int	width;
+	int	height;
 
 	i = 0;
 	while (i < count)
 	{
-//		printf("n = %f, x = %f, m = %f, y = %f\n",n, (data->draw[i])->x, m, (data->draw[i])->y);
-		
-		if ((data->draw[i])->type == 'R')
+		type = (data->draw[i])->type;
+		x = (data->draw[i])->x;
+		y = (data->draw[i])->y;
+		width = (data->draw[i])->width;
+		height = (data->draw[i])->height;		
+		if (type == 'R')
 		{
-			if ((((int)(data->draw[i])->x < (int)n) && ((int)n < (int)((data->draw[i])->x + (data->draw[i])->width)))
-				&& (((int)(data->draw[i])->y < (int)m) && ((int)m < (int)((data->draw[i])->y + (data->draw[i])->height))))
-				write(1, ((data->draw)[i]->pen), 1);
+			if (((n > x) && ((x + width) >= n)) && ((m > y) && ((y + height) >= m)))
+				data->tab[m][n] = (data->draw)[i]->pen;
 			else
-				write(1, (data->background_char), 1);
+				data->tab[m][n] = data->background_char;
 		}
-		else if ((data->draw[i])->type == 'r')
+		else if (type == 'r')
 		{
-			if (((((int)((data->draw[i])->x) - (int)n) == 0) && ((data->draw[i])->y < (int)m))
-				|| ((((int)((data->draw[i])->y) - (int)m) == 0) && ((data->draw[i])->x < (int)n)))
-				write(1, ((data->draw)[i]->pen), 1);
+			if ((((n == (x + 1)) && ((m > y) && ((y + height) >= m))) || ((m == (y + 1)) && ((n > x) && ((x + width) >= n))))
+				|| (((n == (x + width)) && ((m > y) && ((y + height) >= m))) || ((m == (y + height)) && ((n > x) && ((x + width) >= n)))))
+				data->tab[m][n] = (data->draw)[i]->pen;
 			else
-				write(1, (data->background_char), 1);
+				data->tab[m][n] = data->background_char;
 		}
 		else
 		{
@@ -130,10 +139,10 @@ int	main (int argc, char **argv)
 	t_data	*data;
 	int		i;
 	int		count_line;
-	float	m;
-	float	n;
+	int	m;
+	int	n;
 	char	c;
-	
+
 	data = malloc (1 * sizeof(t_data));
 	if (argc != 2)
 	{
@@ -162,6 +171,17 @@ int	main (int argc, char **argv)
 		{
 			if (draw(m, n, count_line, data) < 0)
 				return (1);
+			n++;
+		}
+		m++;
+	}
+	m = 0;
+	while (m < data->height)
+	{
+		n = 0;
+		while (n < data->width)
+		{
+			write(1, data->tab[m][n], 1);
 			n++;
 		}
 		write(1, "\n", 1);

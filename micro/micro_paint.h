@@ -6,7 +6,7 @@
 /*   By: cproesch <cproesch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 11:18:50 by cproesch          #+#    #+#             */
-/*   Updated: 2021/11/04 14:20:22 by cproesch         ###   ########.fr       */
+/*   Updated: 2021/11/04 18:28:35 by cproesch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,10 @@
 typedef	struct s_draw
 {
 	char	type;
-	float	x;
-	float	y;
-	float	width;
-	float	height;
+	int		x;
+	int		y;
+	int		width;
+	int		height;
 	char	pen[2];
 }	t_draw;
 
@@ -33,7 +33,9 @@ typedef	struct s_data
 	int		width;
 	int		height;
 	char	background_char[2];
-	t_draw	draw[1000][30];
+	t_draw	draw[1000][1000];
+	char	*tab[1000][1000];
 }	t_data;
 
 #endif
+
